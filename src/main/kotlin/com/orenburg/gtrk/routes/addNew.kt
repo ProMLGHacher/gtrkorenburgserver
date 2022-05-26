@@ -2,6 +2,7 @@ package com.orenburg.gtrk.routes
 
 import com.orenburg.gtrk.database.NewTable
 import com.orenburg.gtrk.models.DetailedNew
+import com.orenburg.gtrk.utils.formatter
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -11,6 +12,7 @@ import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.File
+import java.time.LocalDateTime
 
 fun Route.addNew() {
     route("addNew") {
@@ -21,7 +23,7 @@ fun Route.addNew() {
                 NewTable.insert {
                     it[type] = new.type.toString()
                     it[header] = new.header
-                    it[date] = new.date
+                    it[date] = LocalDateTime.now().format(formatter)
                     it[article] = new.article
                     it[urlVideo] = new.urlVideo
                     it[urlImage] = new.urlImage
@@ -42,6 +44,9 @@ fun Route.addNew() {
                     }
                     is PartData.FileItem -> {
                         fileName = part.originalFileName as String
+                        if (File("C:/serverFolder/$fileName").exists()) {
+                            fileName += "Dubl"
+                        }
                         var fileBytes = part.streamProvider().readBytes()
                         File("C:/serverFolder/").mkdir()
                         File("C:/serverFolder/$fileName").writeBytes(fileBytes)
@@ -68,6 +73,9 @@ fun Route.addNew() {
                     }
                     is PartData.FileItem -> {
                         fileName = part.originalFileName as String
+                        if (File("C:/serverFolder/$fileName").exists()) {
+                            fileName += "Dubl"
+                        }
                         var fileBytes = part.streamProvider().readBytes()
                         File("C:/serverFolder/").mkdir()
                         File("C:/serverFolder/$fileName").writeBytes(fileBytes)
