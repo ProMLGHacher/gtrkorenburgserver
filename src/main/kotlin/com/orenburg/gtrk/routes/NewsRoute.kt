@@ -25,7 +25,7 @@ fun Route.newRoute() {
 
             transaction {
                 val new = NewTable.select {NewTable.id.eq(id)}.single()
-                req = DetailedNew(new[NewTable.id], NewsType.valueOf(new[NewTable.type]), new[NewTable.header], new[NewTable.date], new[NewTable.urlImage], new[NewTable.article], new[NewTable.urlVideo])
+                req = DetailedNew(new[NewTable.id], NewsType.valueOf(new[NewTable.type]), new[NewTable.header], new[NewTable.date], new[NewTable.urlImage], new[NewTable.article])
             }
 
             call.respond(req)
@@ -37,6 +37,7 @@ fun Route.newRoute() {
             val count = call.request.queryParameters["count"]?.toInt() ?: Int.MAX_VALUE
             val filter = call.request.queryParameters["filter"] ?: "All"
             val date = call.request.queryParameters["date"]
+            val sort = call.request.queryParameters["sort"]
 
             val currentFilterDate = LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter)
             val filterDate = if (date != null) getDateFilter(DateType.valueOf(date), currentFilterDate) else null
@@ -56,7 +57,9 @@ fun Route.newRoute() {
                 }
             }
 
-            call.respond(listNewsEvent)
+            if (sort == null) call.respond(listNewsEvent.apply { reverse() })
+            else if (sort == "New") call.respond(listNewsEvent.apply { reverse() })
+            else call.respond(listNewsEvent)
 
         }
     }

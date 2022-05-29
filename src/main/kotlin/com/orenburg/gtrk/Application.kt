@@ -3,6 +3,7 @@ package com.orenburg.gtrk
 import com.orenburg.gtrk.database.NewTable
 import io.ktor.server.application.*
 import com.orenburg.gtrk.plugins.*
+import com.orenburg.gtrk.utils.formatter
 import initClient
 import io.ktor.serialization.gson.*
 import io.ktor.serialization.kotlinx.json.*
@@ -19,11 +20,7 @@ fun main(args: Array<String>): Unit =
 @Suppress("unused") // application.conf references the main function. This annotation prevents the IDE from marking it as unused.
 fun Application.module() {
 
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    println(formatter.format(LocalDate.now()))
-    val current2 = LocalDate.parse("2021-07-29", formatter)
-    val current3 = LocalDate.parse("2021-08-29", formatter)
-    println(current2 > current3)
+    println(formatter.format(LocalDateTime.now()))
 
     initClient()
 
@@ -43,9 +40,6 @@ fun Application.module() {
 
     transaction {
         SchemaUtils.create(NewTable)
-
-        NewTable.select { NewTable.type.eq("ergui") } .limit(Int.MAX_VALUE, 0).forEach { println(it) }
-
     }
 
     configureRouting()

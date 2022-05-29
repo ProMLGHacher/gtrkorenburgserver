@@ -9,7 +9,6 @@ object NewTable: Table() {
     val date = varchar("date", 100)
     val urlImage = varchar("urlImage", 1000).nullable()
     val article = text("article")
-    val urlVideo = varchar("urlVideo", 1000).nullable()
 
     override val primaryKey = PrimaryKey(id)
 }
